@@ -1,0 +1,203 @@
+<template>
+  <div class="tutorial-page">
+    <!-- 灵活使用tabs组件 -->
+    <div class="flexible-tabs">
+      <!-- 自定义tab-bar组件 -->
+      <div class="flexible-tabbar">
+        <image src="../Common/img/user.png"></image>
+        <text class="{{currentIndex === 0 ? 'active' : ''}}" onclick="clickTabBar(0)">应用</text>
+        <text class="{{currentIndex === 1 ?  'active' : ''}}" onclick="clickTabBar(1)">智能设备</text>
+        <text class="{{currentIndex === 2 ? 'active' : ''}}" onclick="clickTabBar(2)">授权用户</text>
+        <image src="../Common/img/setting.png"></image>
+      </div>
+      <!-- 监听change事件，触发时动态修改tabs的index属性 -->
+      <tabs onchange="changeTabactive" index="{{currentIndex}}">
+        <tab-content class="flexible-tab-content">
+          <div class="tab-content-section">
+            <div class="tab-content-list">
+              <div class="icon">
+                <image src="../Common/img/loading.png"></image>
+              </div>
+              <div class="title">
+                <text>应用名：test_web_1</text>
+                <text>授权时间：2019/11/20</text>
+                <text>授权登录中</text>
+              </div>
+            </div>
+            <div class="tab-content-list">
+              <div class="icon">
+                <image src="../Common/img/loading.png"></image>
+              </div>
+              <div class="title">
+                <text>应用名：test_web_2</text>
+                <text>授权时间：2019/11/29</text>
+                <text>授权登录中</text>
+              </div>
+            </div>
+            <div class="tab-content-list">
+              <div class="icon">
+                <image src="../Common/img/test_web_shopping.jpg"></image>
+              </div>
+              <div class="title">
+                <text>应用名：test_web_shopping</text>
+                <text>授权时间：2019/12/24</text>
+                <text>授权登录中</text>
+              </div>
+            </div>
+          </div>
+          <div class="tab-content-section">
+            <div class="tab-content-list">
+              <div class="icon">
+                <image src="../Common/img/stereo.jpg"></image>
+              </div>
+              <div class="title">
+                <text>对象名：test_device_1</text>
+                <text>授权时间：2019/12/20</text>
+                <text>已授权登记</text>
+              </div>
+            </div>
+          </div>
+          <div class="tab-content-section">
+            <div class="tab-content-list">
+              <div class="icon">
+                <image src="../Common/img/heck.jpg"></image>
+              </div>
+              <div class="title">
+                <text>用户名：Heck</text>
+                <text>授权时间：2019/11/08</text>
+                <text>授权期限：2020/2/18</text>
+              </div>
+            </div>
+          </div>
+        </tab-content>
+      </tabs>
+    </div>
+    <div class="ble-connecting">
+      <text>蓝牙连接中</text>
+    </div>
+    <div class="method-choose">
+      <div class="methods" onclick="changeMethod1()">
+        <text>{{method1}}</text>
+      </div>
+      <image src="../Common/img/line.png"></image>
+      <div class="methods" onclick="changeMethod2()">
+        <text>{{method2}}</text>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style lang="less">
+.tutorial-page {
+  flex: 1;
+  flex-direction: column;
+  .flexible-tabs {
+    flex: 1;
+    flex-direction: column;
+    .flexible-tabbar {
+      height: 100px;
+      padding: 0 30px;
+      background-color: #f1f1f1;
+      align-items: center;
+      text {
+        flex-grow: 1;
+        height: 100px;
+        margin: 0 30px;
+        text-align: center;
+        border: 0px solid #f1f1f1;
+        border-bottom-width: 5px;
+      }
+      image {
+        height: 50px;
+        width: 50px;
+        resize-mode: contain;
+      }
+      .active {
+        color: #0faeff;
+        border-bottom-color: #0faeff;
+      }
+    }
+    .flexible-tab-content {
+      flex: 1;
+      .tab-content-section {
+        flex: 1;
+        background-color: #ffffff;
+        flex-direction: column;
+        .tab-content-list {
+          flex-direction: row;
+          border-left: 10px solid #298383;
+          padding: 20px 20px 20px;
+          .icon {
+            border: 5px solid #808080;
+          }
+          .title {
+            flex-direction: column;
+            padding: 10px 10px 10px;
+          }
+        }
+      }
+    }
+  }
+  .ble-connecting {
+    justify-content: center;
+    background-color: #e0dddd;
+    text {
+      font-style: italic;
+      color: #298383;
+    }
+  }
+  .method-choose {
+    border-top: 10px solid #298383;
+    .methods {
+      width: 49%;
+      padding: 40px;
+      justify-content: center;
+    }
+  }
+}
+</style>
+
+<script>
+/* eslint-disable linebreak-style */
+/* eslint-disable indent */
+import router from '@system.router'
+
+export default {
+  private: {
+    currentIndex: 0,
+    chooseMethod: [],
+    method1: '手环认证(当前)',
+    method2: '面部认证'
+  },
+  onInit() {
+    this.$page.setTitleBar({ text: '授权管理' })
+    // 数据初始化
+    this.productList = [].concat(this.productAddList)
+    this.chooseMethod = { 1: '手环认证', 2: '手环认证(当前)', 3: '面部认证', 4: '面部认证(当前)' }
+    //router.clear()
+  },
+  changeTabactive(evt) {
+    this.currentIndex = evt.index
+  },
+  clickTabBar(index) {
+    this.currentIndex = index
+  },
+  routePage(param) {
+    router.push({
+      uri: '/' + param
+    })
+  },
+  loadMoreData() {
+    // 加载更多数据
+    this.productList = this.productList.concat(this.productAddList)
+  },
+  changeMethod1() {
+    this.method1 = this.chooseMethod[2]
+    this.method2 = this.chooseMethod[3]
+  },   
+  changeMethod2() {
+    this.method1 = this.chooseMethod[1]
+    this.method2 = this.chooseMethod[4]
+  }
+}
+</script>

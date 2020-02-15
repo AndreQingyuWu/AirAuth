@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>URL跳转配置</title>
+    <script
+      type="text/javascript"
+      src="//statres.quickapp.cn/quickapp/js/routerinline.min.js"
+    ></script>
+  </head>
+  <body>
+    <!-- 检测平台是否支持服务 -->
+    <script type="text/javascript">
+      // 通过传递回调函数实现
+      channelReady(function(bAvailable) {
+        alert('是否存在框架服务：' + bAvailable)
+      })
+    </script>
+  </body>
+</html>

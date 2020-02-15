@@ -1,0 +1,76 @@
+<template>
+    <div class="auth-page">
+        <div class="auth">
+            <image></image>
+            <text>身份认证</text>
+        </div>
+        <div class="ble-connecting">
+            <text>蓝牙连接中</text>
+        </div>
+        <div class="method-choose">
+            <div class="methods" onclick="routePage('AcousticAuth')">
+                <text>{{method1}}</text>
+            </div>
+            <image src="../Common/img/line.png"></image>
+            <div class="methods" onclick="routePage('FaceAuth')">
+                <text>{{method2}}</text>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+<style lang="less">
+.auth-page {
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  .auth {
+    justify-content: center;
+    margin-bottom: 500px;
+    text {
+      font-size: 50px;
+      background-color: #faebd7;
+      border: 2px solid grey;
+    }
+  }
+  .ble-connecting {
+    justify-content: center;
+    background-color: #e0dddd;
+    text {
+      font-style: italic;
+      color: #298383;
+    }
+  }
+  .method-choose {
+    border-top: 10px solid #298383;
+    .methods {
+      width: 49%;
+      padding: 40px;
+      justify-content: center;
+    }
+  }
+}
+</style>
+
+<script>
+/* eslint-disable linebreak-style */
+/* eslint-disable indent */
+import router from '@system.router'
+
+export default {
+    private: {
+        chooseMethod: [],
+        method1: '手环认证',
+        method2: '面部认证'
+    },
+    onInit() {
+        this.$page.setTitleBar({ text: 'AirAuth' })
+    },
+    routePage(param) {
+        router.push({
+            uri: '/' + param
+        })
+    }
+}
+</script>

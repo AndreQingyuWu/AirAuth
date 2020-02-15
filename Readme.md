@@ -1,4 +1,4 @@
-![avatar](http://39.105.168.162:8080/AirAuth.png)
+![avatar](https://geecatswc.github.io/source/AirAuth/ReadmePage/AirAuth.png)
 
 # AirAuth 轻验
 
@@ -121,7 +121,7 @@ AirAuth是一款提供有页面和智能设备调用接口，基于快应用开�
 </code></pre>
 
 ## 作者列表
-![avatar](http://39.105.168.162:8080/GeeCat.jpg)  
+![avatar](https://geecatswc.github.io/source/AirAuth/ReadmePage/GeeCat.jpg)  
 本项目由GeeCat团队开发  
     
 ## V1.0.0

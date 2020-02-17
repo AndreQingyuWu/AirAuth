@@ -1,0 +1,24 @@
+<template>
+  <!-- template里只能有一个根节点 -->
+  <div class="test_Web"></div>
+</template>
+
+<script>
+import webview from '@system.webview'
+webview.loadUrl({
+  url: 'http://w-16332-32721-57575.479040224.sites.hk34.qifeiye.com/?qfy_preview=1',
+  allowthirdpartycookies: true
+})
+export default {
+  // 页面级组件的数据模型，影响传入数据的覆盖机制：private内定义的属性不允许被覆盖
+  private: {
+  },
+}
+</script>
+
+<style>
+.test_Web{
+    flex-direction: column;
+    align-items: center;
+}
+</style>

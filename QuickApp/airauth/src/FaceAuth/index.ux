@@ -1,0 +1,197 @@
+<template>
+  <!-- template里只能有一个根节点 -->
+  <div class="auth-page">
+    <div class="container">
+      <camera id="camera" class="camera" deviceposition="front" flash="off" onerror="handlerError"></camera>
+      <input type="button" value="R" class="btn" onclick="upload_face"></input>
+    </div>
+  </div>
+</template>
+
+<script>
+/* eslint-disable no-undef */
+import prompt from '@system.prompt'
+import router from '@system.router'
+import websocketfactory from '@system.websocketfactory'
+
+let ws = null
+let isOpen = false
+
+export default {
+  public: {
+    response_type: '',
+    client_id: '',
+    redirect_uri: '',
+    scope: '',
+    state: '',
+    pictureUrl: '',
+    message: '',
+  },
+  onInit() {
+    this.$page.setTitleBar({ text: '面部认证' })
+    this.create()
+    this.upload_face()
+    this.close()
+  },
+  upload_face() {
+    this.send()
+    setTimeout()
+    router.push({
+      uri: '/AuthResult',
+    })
+  },
+  create() {
+    ws = websocketfactory.create({
+      url: '23.99.190.56:6381',
+      header: {
+        'content-type': 'application/json'
+      },
+      protocols: ['protocol']
+    })
+    ws.onopen = function () {
+      isOpen = true
+      prompt.showToast({
+        message: 'connect open'
+      })
+    }
+    ws.onmessage = function (data) {
+      prompt.showToast({
+        message: `message is ${data.data}`
+      })
+    }
+    ws.onerror = function () {
+      prompt.showToast({
+        message: 'error'
+      })
+    }
+    ws.onclose = function (data) {
+      prompt.showToast({
+        message: 'onclose:data.code = ' + data.code + ', data.reason = ' + data.reason + ', data.wasClean = ' + data.wasClean
+      })
+    }
+  },
+  handleChange(e) {
+    this.message = e.value
+  },
+  send() {
+    isOpen && ws.send({
+      data: this.message,
+      success: function () {
+        prompt.showToast({
+          message: 'send success'
+        })
+      },
+      fail: function () {
+        prompt.showToast({
+          message: 'send fail'
+        })
+      }
+    })
+  },
+  close() {
+    isOpen && ws.close({
+      success: function () {
+        isOpen = false
+        prompt.showToast({
+          message: 'close success'
+        })
+      },
+      fail: function () {
+        prompt.showToast({
+          message: 'close fail'
+        })
+      }
+    })
+  }
+}
+</script>
+
+<style>
+.auth-page {
+  flex-direction: column;
+  align-items: center;
+}
+.container {
+  flex-direction: column;
+  align-items: center;
+  padding-top: 200px;
+}
+.camera {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+}
+.btn {
+  opacity: 0.7;
+  font-size: 100px;
+  position: fixed;
+  right: 50px;
+  bottom: 60px;
+  height: 150px;
+  border-radius: 100px;
+  width: 150px;
+  background-color: #0880d7;
+  border-color: #0880d7;
+  color: #f8f8ff;
+}
+.text1 {
+  opacity: 0.9;
+  font-family: Arial;
+  font-weight: bolder;
+  position: fixed;
+  font-size: 30px;
+  color: #6495ed;
+  bottom: 195px;
+  left: 20px;
+}
+.text2 {
+  opacity: 0.9;
+  font-family: Arial;
+  font-weight: bolder;
+  position: fixed;
+  font-size: 30px;
+  color: #6495ed;
+  bottom: 160px;
+  left: 20px;
+}
+.text3 {
+  opacity: 0.9;
+  font-family: Arial;
+  font-weight: bolder;
+  position: fixed;
+  font-size: 30px;
+  color: #6495ed;
+  bottom: 125px;
+  left: 20px;
+}
+.text4 {
+  opacity: 0.9;
+  font-family: Arial;
+  font-weight: bolder;
+  position: fixed;
+  font-size: 30px;
+  color: #6495ed;
+  bottom: 90px;
+  left: 20px;
+}
+.text5 {
+  opacity: 0.9;
+  font-family: Arial;
+  font-weight: bolder;
+  position: fixed;
+  font-size: 30px;
+  color: #6495ed;
+  bottom: 55px;
+  left: 20px;
+}
+.text6 {
+  opacity: 0.9;
+  font-family: Arial;
+  font-weight: bolder;
+  position: fixed;
+  font-size: 30px;
+  color: #6495ed;
+  bottom: 20px;
+  left: 20px;
+}
+</style>

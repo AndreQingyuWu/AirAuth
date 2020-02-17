@@ -1,0 +1,283 @@
+<template>
+    <div class="ble-devices">
+        <div class="item-container">
+                <list class="list">
+                    <list-item class="device" for="{{devices}}" onclick="createBLEConnection($item)" type="{{$idx}}">
+                        <text class="device-name">{{$item.name}}:{{$item.deviceId}}</text>
+                    </list-item>
+                </list>
+            </div>
+        <div class="device">
+            <div class="icon">
+                <image src="../Common/img/stereo.jpg"></image>
+            </div>
+            <div class="title">
+                <text>设备名：test_device_1</text>
+                <text>蓝牙地址：7C:D6:AB:15:8B:B9</text>
+                <text>状态：未授权</text>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style lang="less">
+.ble-devices {
+  flex-direction: column;
+  .device {
+    flex-direction: row;
+    border-left: 10px solid #298383;
+    padding: 20px 20px 20px;
+    .icon {
+      border: 5px solid #808080;
+    }
+    .item-container {
+      flex-direction: column;
+      .list {
+        width: 100%;
+        height: 500px;
+      }
+      .device {
+        flex-direction: column;
+        margin: 10px 0;
+      }
+      .device-name {
+        width: 100%;
+        line-height: 50px;
+        text-align: center;
+      }
+    }
+    .title {
+      flex-direction: column;
+    }
+  }
+}
+</style>
+
+<script>
+/* eslint-disable linebreak-style */
+/* eslint-disable semi */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+/* eslint-disable indent */
+import bluetooth from '@system.bluetooth'
+import prompt from '@system.prompt'
+
+export default {
+    private: {
+        componentName: 'Bluetooth',
+        devices: [],
+        deviceLen: 0,
+        deviceId: ''
+    },
+    onInit() {
+        this.$page.setTitleBar({ text: '蓝牙连接' })
+        this.openAdapter()
+        this.startDevicesDiscovery()
+    },
+    openAdapter() {
+        let _this = this
+
+        //初始化蓝牙模块
+        bluetooth.openAdapter({
+            //是否打开系统蓝牙开关，默认false
+            operateAdapter: true,
+            success(res) {
+                prompt.showToast({
+                    //message: '蓝牙初始化成功'
+                })
+
+                setTimeout(() => {
+                    _this.startDevicesDiscovery()
+                }, 2000)
+            },
+            fail(data, code) {
+                prompt.showToast({
+                    //message: '蓝牙初始化失败'
+                })
+            }
+        })
+    },
+    startDevicesDiscovery() {
+        let _this = this
+
+        bluetooth.startDevicesDiscovery({
+            //指定设备uuid，支持16-bit,32-bit,128-bit uuid,不填则扫描周围所有设备
+            //services: ["1105"],
+            //是否允许重复设备上报，如果不需要监听广播包数据，建议不设置此项，默认值为false
+            allowDuplicatesKey: true,
+            success(res) {
+                prompt.showToast({
+                    //message: '开始搜寻附近的蓝牙外围设备'
+                })
+                _this.ondevicefound()
+            },
+            fail(data, code) {
+                prompt.showToast({
+                    //message: `蓝牙搜寻失败,code=${code}`
+                })
+            }
+        })
+    },
+    stopDevicesDiscovery() {
+        bluetooth.stopDevicesDiscovery({
+            success() {
+                prompt.showToast({
+                    //message: '停止扫描'
+                })
+            }
+        })
+    },
+    ondevicefound() {
+        let _this = this
+
+        bluetooth.ondevicefound = (res) => {
+            res.devices.forEach(device => {
+                if (!device.name && !device.localName) {
+                    return
+                }
+
+                const foundDevices = _this.devices
+                const idx = _this.inArray(foundDevices, 'deviceId', device.deviceId)
+
+                if (idx === -1) {
+                    _this.devices.push(device)
+                } else {
+                    _this.devices.splice(idx, 1, device)
+                }
+
+                _this.deviceLen = _this.devices.length
+            })
+        }
+    },
+    writeBLECharacteristicValue() {
+        const _this = this
+
+        // 向蓝牙设备发送一个0x00的16进制数据
+        const buffer = new ArrayBuffer(1)
+        const dataView = new DataView(buffer)
+        dataView.setUint8(0, Math.random() * 255 | 0)
+        bluetooth.writeBLECharacteristicValue({
+            deviceId: _this._deviceId,
+            serviceId: _this._serviceId,
+            characteristicId: _this._characteristicId,
+            value: buffer,
+            success() {
+                prompt.showToast({
+                    //message: '写入成功'
+                })
+            }
+        })
+    },
+    closeAdapter() {
+        bluetooth.closeAdapter()
+    },
+    createBLEConnection(data) {
+        const _this = this
+        const deviceId = data.deviceId
+        const name = data.name
+
+        bluetooth.createBLEConnection({
+            deviceId,
+            success(res) {
+                _this.connected = true
+
+                prompt.showToast({
+                    //message: '连接成功'
+                })
+                _this.deviceId = deviceId
+                _this.getBLEDeviceServices(deviceId)
+            }
+        })
+    },
+
+    getBLEDeviceServices(deviceId) {
+        const _this = this
+
+        bluetooth.getBLEDeviceServices({
+            deviceId,
+            success(res) {
+                for (let i = 0; i < res.services.length; i++) {
+                    if (res.services[i].isPrimary) {
+                        _this.getBLEDeviceCharacteristics(deviceId, res.services[i].uuid)
+                    }
+                }
+            }
+        })
+    },
+
+    getBLEDeviceCharacteristics(deviceId, serviceId) {
+        const _this = this
+
+        bluetooth.getBLEDeviceCharacteristics({
+            deviceId,
+            serviceId,
+            success(res) {
+                for (let i = 0; i < res.characteristics.length; i++) {
+                    let item = res.characteristics[i]
+
+                    if (item.properties.read) {
+                        bluetooth.readBLECharacteristicValue({
+                            deviceId,
+                            serviceId,
+                            characteristicId: item.uuid,
+                            success() {
+                                prompt.showToast({
+                                    //message: '读取成功'
+                                })
+                            }
+                        })
+                    }
+
+                    if (item.properties.write) {
+                        _this._deviceId = deviceId
+                        _this._serviceId = serviceId
+                        _this._characteristicId = item.uuid
+
+                        _this.writeBLECharacteristicValue()
+                    }
+
+                    if (item.properties.notify || item.properties.indicate) {
+                        bluetooth.notifyBLECharacteristicValueChange({
+                            deviceId,
+                            serviceId,
+                            characteristicId: item.uuid,
+                            state: true,
+                            success() {
+                                prompt.showToast({
+                                    //message: '订阅成功'
+                                })
+                            }
+                        })
+                    }
+                }
+            }
+        })
+    },
+    closeBLEConnection() {
+        const _this = this
+
+        bluetooth.closeBLEConnection({
+            deviceId: _this.deviceId,
+            success() {
+                prompt.showToast({
+                    //message: '已断开连接'
+                })
+            },
+            fail(err) {
+                prompt.showToast({
+                    message: err
+                })
+            }
+        })
+    },
+    inArray(arr, key, val) {
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i][key] === val) {
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+</script>
+

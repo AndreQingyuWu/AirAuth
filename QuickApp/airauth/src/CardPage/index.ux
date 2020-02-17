@@ -1,0 +1,52 @@
+<template>
+    <div class="card-page">
+        <div>
+            <image src="../Common/img/card-1.jpg"></image>
+        </div>
+        <div>
+            <image src="../Common/img/card-2.1.jpg" onclick="scanBarcode()"></image>
+            <image src="../Common/img/card-2.2.jpg" onclick="routePage('BLEDevice')"></image>
+            <image src="../Common/img/card-2.3.jpg" onclick="routePage('Management')"></image>
+        </div>
+        <div>
+            <image src="../Common/img/card-3.jpg"></image>
+        </div>
+    </div>
+</template>
+
+<style lang="less">
+.card-page {
+  flex-direction: column;
+}
+</style>
+
+<script>
+/* eslint-disable linebreak-style */
+/* eslint-disable no-console */
+/* eslint-disable linebreak-style */
+/* eslint-disable indent */
+import router from '@system.router'
+import barcode from '@system.barcode'
+
+export default {
+    onInit() {
+        this.$page.setTitleBar({ text: '' })
+    },
+    routePage(param) {
+        router.push({
+            uri: '/' + param
+        })
+    },
+    scanBarcode() {
+        barcode.scan({
+            success: function (data) {
+                console.log(`handling success: ${data.result}`)
+            },
+            fail: function (data, code) {
+                console.log(`handling fail, code = ${code}`)
+            }
+        })
+    }
+
+}
+</script>

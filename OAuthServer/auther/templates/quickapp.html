@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>QuickApp</title>
+</head>
+<body>
+<div>
+    <input type="hidden" value="{{response_type}}" id="response_type">
+    <input type="hidden" value="{{client_id}}" id="client_id">
+    <input type="hidden" value="{{redirect_uri}}" id="redirect_uri">
+    <input type="hidden" value="{{scope}}" id="scope">
+    <input type="hidden" value="{{state}}" id="state">
+</div>
+    <script>
+        let response_type = document.getElementById('response_type').value;
+        let client_id = document.getElementById('client_id').value;
+        let redirect_uri = document.getElementById('redirect_uri').value;
+        let scope = document.getElementById('scope').value;
+        let state = document.getElementById('state').value;
+        window.location.href='hap://app/com.AndreWu.AirAuth/Demo?state={{state}}&response_type={{response_type}}&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope={{scope}}'       	
+    </script>
+</body>
+</html>

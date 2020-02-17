@@ -28,7 +28,7 @@ SECRET_KEY = '#!kta!9e0)24d@9#<*=ra$r!0k0+p8@w+a%7g1bbof0+ad@4_('
 
 # 自由选择需要开启的功能
 # 是否开始[在线工具]应用
-TOOL_FLAG = True
+TOOL_FLAG = False
 # 是否开启[API]应用
 API_FLAG = False
 # DEBUG模式是否开始的选择
@@ -229,9 +229,9 @@ EMAIL_PORT = 465  # 由于阿里云的25端口打不开，所以必须使用SSL�
 # 是否使用了SSL 或者TLS，为了用465端口，要使用这个
 EMAIL_USE_SSL = True
 # 默认发件人，不设置的话django默认使用的webmaster@localhost，所以要设置成自己可用的邮箱
-DEFAULT_FROM_EMAIL = 'your-webname <your-email@163.com>'
+DEFAULT_FROM_EMAIL = 'andre.qingyu.wu@gmail.com'
 
 # 网站默认设置和上下文信息
-SITE_END_TITLE = '网站的名称，如TendCode'
-SITE_DESCRIPTION = '网站描述'
-SITE_KEYWORDS = '网站关键词，多个词用英文逗号隔开'
+SITE_END_TITLE = 'GeeCat'
+SITE_DESCRIPTION = '一个充满活力的开发小组'
+SITE_KEYWORDS = '人机交互、嵌入式、深度学习'

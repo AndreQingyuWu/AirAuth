@@ -11,18 +11,6 @@
 {% endblock %}
 
 {% block base_content %}
-<script type="text/javascript">
-function jump(){
-    var p = navigator.platform;       
-    system.win = p.indexOf("Win") == 0;  
-    system.mac = p.indexOf("Mac") == 0;  
-    system.x11 = (p == "X11") || (p.indexOf("Linux") == 0);     
-        if(system.win||system.mac||system.xll){//如果是电脑跳转到
-            window.location.href="#";  
-        }else{
-            window.location.href="http://geecat.cn:443/oauth?response_type=0&client_id=0&redirect_uri='www.baidu.com'&scope=0&state=0" ;
-}
-</script>
 <div class="container">
     <div class="row">
         <div class="col-12 col-sm-8 col-md-6 offset-sm-2 offset-md-3 px-xl-5">
@@ -37,14 +25,10 @@ function jump(){
                     </div>
                     <div class="login-link">
                         {% get_request_param request 'next' as next_url %}
-                    <!--
                         <a class="mx-4" href="/accounts/weibo/login/?next={{ next_url }}" title="社交账号登录有点慢，请耐心等候！"><i class="fa fa-weibo fa-2x"></i></a>
                         <a class="mx-4" href="/accounts/github/login/?next={{ next_url }}" title="社交账号登录有点慢，请耐心等候！"><i class="fa fa-github fa-2x"></i></a>
-                    -->    
-                        <a class="mx-4" href="http://geecat.cn:443/oauth?response_type=0&client_id=0&redirect_uri=www.baidu.com&scope=0&state=0"  title="AirAuth:第三方生物认证服务"><img class="airauth-icon" style="max-height:45px" alt="AirAuth" src="{% static 'blog/img/airauth.png' %}"></a>
-                        <a class="mx-4" href="/accounts/github/login/?next={{ next_url }}" title="Github第三方登录"><img class="github-icon" style="max-height:45px" alt="Github" src="{% static 'blog/img/Github.png' %}"></a>
-                    
-		    </div>
+                        <a class="mx-4" href="http://geecat.cn:443/oauth/?response_type=%27code%27?client_id=1?redirect_uri=%22www.baidu.com%22?scope=1?state=1"  title="AirAuth:基于快应用的生物认证"><img src="/test/img/2.png"></a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,15 +1,10 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 import json
 from oauthServer import models as oauthM
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.hashers import make_password
 from oauthServer.Tools import Tools
 import time,datetime
-from django.http import HttpResponseRedirect
-from django.utils.html import format_html
-from django.views.decorators.csrf import csrf_exempt
-#import logging
-#log=open("./log.txt","w")
 
 # Create your views here.
 def server(request):
@@ -53,13 +48,10 @@ def server(request):
             else:
                 pass
     except Exception as e:
-        print(e)
-    #return format_html('<script>location.href="hap://app/com.AndreWu.AirAuth/Demo?state={{state}}"</script>')
-    #return HttpResponseRedirect("http://39.105.168.162:80/preview/Demo")
+        print(e) 
     return render(request, 'quickapp.html', locals())
 
 #登录
-@csrf_exempt
 def do_login(request):
     #try:
     username = ''
@@ -71,7 +63,6 @@ def do_login(request):
     state = ''
     authCode = ''
     url = ''
-    face_img= ''
     if request.method == 'GET':
         if (request.GET.get('username') != None) & (request.GET.get('password') != None):
             username = request.GET['username']
@@ -86,33 +77,35 @@ def do_login(request):
         else:
             return HttpResponse('have no user')
     elif request.method == 'POST':
-        postData=json.loads(request.body)
-	#face_img = request.files.get('file')
-        if postData.get('files') != None:
-            face_img=postData.get('files').get('file')
-            #response_type = postData.get('response_type')
-            #client_id = postData.get('client_id')
-            #redirect_uri = postData.get('redirect_uri')
-            #scope = postData.get('scope')
-            #state = postData.get('state')
-            #authCode = Tools.auto_auth_code()
-            #user = authenticate(username=username, password=password)
-            #if user is not None:
-            #    user.backend = 'django.contrib.auth.backends.ModelBackend'  # 指定默认的登录验证方式
-            #    login(request, user)
-            #    host = oauthM.Host.objects.create(
-            #        client_id=client_id, host_ip='23.99.190.56', active_time=int(time.time()), user_id=request.user.id)
-            #    host.save()
-            #    oauthM.Authcode_log.objects.create(host=host, response_type=response_type,
-            #                                       redirect_uri=redirect_uri, scope=scope, state=state, auth_code=authCode, exptime=int(time.time()+600000))
-            #    jsonData = {
-            #        'redirect_uri': redirect_uri,
-            #        'auth_code': authCode,
-            #        'state':state,
-            #    }
-            #    return HttpResponse(json.dumps(jsonData))
-            #else:
-            #    return HttpResponse('no user auth(post).')
+        postData = json.loads(request.body)
+        if (postData.get('img') != None):
+            return redirect("http://geecat.cn")
+        if (postData.get('username') != None) & (postData.get('password') != None):
+            username = postData.get('username')
+            password = postData.get('password')
+            response_type = postData.get('response_type')
+            client_id = postData.get('client_id')
+            redirect_uri = postData.get('redirect_uri')
+            scope = postData.get('scope')
+            state = postData.get('state')
+            authCode = Tools.auto_auth_code()
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                user.backend = 'django.contrib.auth.backends.ModelBackend'  # 指定默认的登录验证方式
+                login(request, user)
+                host = oauthM.Host.objects.create(
+                    client_id=client_id, host_ip='192.168.10.18', active_time=int(time.time()), user_id=request.user.id)
+                host.save()
+                oauthM.Authcode_log.objects.create(host=host, response_type=response_type,
+                                                   redirect_uri=redirect_uri, scope=scope, state=state, auth_code=authCode, exptime=int(time.time()+600000))
+                jsonData = {
+                    'redirect_uri': redirect_uri,
+                    'auth_code': authCode,
+                    'state':state,
+                }
+                return HttpResponse(json.dumps(jsonData))
+            else:
+                return HttpResponse('no user auth(post).')
         else:
             return HttpResponse('have no user')
     else:

@@ -19,7 +19,4 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('oauth/', include('oauthServer.urls')),
-    #path('static/',include('static')),
-    #path('static/',settings.STATIC_URL)
-    #path('static/',{'document_root':settings.STATIC_ROOT}),
 ]

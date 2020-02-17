@@ -82,9 +82,9 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dj_auther',
-        'USER': 'root',
-        'PASSWORD': 'wu1999916',
+        'NAME': 'AirAuth',
+        'USER': 'GeeCat',
+        'PASSWORD': 'GeeCat',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
